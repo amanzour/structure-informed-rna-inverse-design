@@ -1,15 +1,26 @@
 #  Secondary-structure-Informed RNA Inverse Design
 
+Secondary-structure-informed RNA Inverse Design, or simply structure-informed-RNA-inverse-design, is a geometric deep learning pipeline for 3D RNA inverse design that also incorporates RNA secondary-structure information.
 ![](/tertiaryedges.png)
 
 Secondary-structure-informed RNA Inverse Design, or simply structure-informed-RNA-inverse-design, is a geometric deep learning pipeline for 3D RNA inverse design that also incorporates RNA secondary-structure information.
 The original code and methodology were adopted from **gRNAde** [gRNAde: Geometric Deep Learning for 3D RNA inverse design](https://arxiv.org/abs/2305.14749), Chaitanya K. Joshi, Arian R. Jamasb, Ramon Viñas, Charles Harris, Simon Mathis, Alex Morehead, and Pietro Liò. gRNAde: Geometric Deep Learning for 3D RNA inverse design. *ICML Computational Biology Workshop, 2023.* and is analogous to [ProteinMPNN](https://github.com/dauparas/ProteinMPNN) for protein design. 
-
  For more information on using original code for training, testing, and also RNA design, see [gRNAde GitHub page](https://github.com/chaitjo/geometric-rna-design).
 
+## Similarity to gRNAde
 Similar to gRNAde, Structure-informed RNA design generates an RNA sequence conditioned on one or more 3D RNA backbone conformations.
 RNA backbones are featurized as geometric graphs and processed via a multi-state GNN encoder which is equivariant to 3D roto-translation of coordinates as well as conformer order. Model decoder and sequence design is similarly order-invariant. 
-Major differences from gRNAde: 1. There are different edge-types (primary-, secondary-, and tertiary-structure) in the input graph (above image). **Note** The software needs an independent RNA secondary-structure identification tool. It currently relies on [x3dna-dssr](https://x3dna.org/), which reads the corresponding pdb file(s) and determines all the canonical and non-canonical base pairs, i.e.,the secondary-structure edge types of the input graph. 2. Positional encoding of edges is eliminated. 3. If multiple 3D backbones are provided, the GNN encoder treats them as separate inputs, only pooling updated node embedings at the final stage in the decoder. The reason for this choice of model architecture is to increase expressiveness of RNAs with multiple stable structures, such as riboswtiches.
+
+## Difference from gRNAde
+
+### Major
+1. There are different edge-types (primary-, secondary-, and tertiary-structure) in the input graph (above image). **Note** The software needs an independent RNA secondary-structure identification tool. It currently relies on [x3dna-dssr](https://x3dna.org/), which reads the corresponding pdb file(s) and determines all the canonical and non-canonical base pairs, i.e.,the secondary-structure edge types of the input graph. 
+2. Positional encoding of edges is eliminated. 
+3. If multiple 3D backbones are provided, the GNN encoder treats them as separate inputs, only pooling updated node embedings at the final stage in the decoder. The reason for this choice of model architecture is to increase expressiveness of RNAs with multiple stable structures, such as riboswtiches.
+
+### Minor
+1. Edge determination in the original `gRNAde` was according to `k-means` clustering of node locations. Here, there were three different edge types. The tertiary-structure edge types were done similar to the roginal method. However, the clustering algorithm used here was `dbscan`. The rational was that we were more interested in extracting relative positioning of nodes (nucleotides) in cavities.
+2. Rhofold and ribonanzanet components were eliminated. There is currently no built-in 3D structure validation of predictions in the metrics.
 
 
 ## Installation
@@ -44,7 +55,7 @@ mamba install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvi
 pip install torch_geometric
 pip install torch_scatter torch_cluster -f https://data.pyg.org/whl/torch-2.1.2+cu118.html
 ```
-<details>
+
 
 
 Other compulsory dependencies
@@ -65,7 +76,7 @@ git clone --depth=1 https://github.com/eternagame/EternaFold.git && cd EternaFol
 make
 ```
 
-Another dependency but only if you need to process new data. (Note that you can just skip this section if you choose to use the already processed files. see **Download already processed files**).
+Another dependency but only if you need to process new data. Note that you can just skip this section if you choose to use the already processed files. See **Download already processed files**.
 ```sh
 # Install x3dna-dssr. This software is under copyright and must be purchased. See https://inventions.techventures.columbia.edu/technologies/dssr-an-integrated--CU20391 for making a request.
 # Another option would have been to use the Find RNA 3D (fr3d) software ((https://www.bgsu.edu/research/rna/software/fr3d.html), which is free . It requires some more modification to the source code. We had tried this software as well and results are similar (more on this in later versions).
@@ -74,7 +85,6 @@ unzip dssr-basic-*.zip. This will create x3dna-dssr folder in tools directory
 
 ```
 
-<details>
 <summary>Tools needed for data pre-processing. Note that if you only want to design RNAs based on trained parameters, or if you choose to use the already processed structures (see **Download already processed files**), data processing is not needed and you can skip this section.</summary>
 
 ```sh
@@ -87,8 +97,6 @@ git clone https://github.com/pylelab/USalign.git && cd USalign/ && git checkout 
 g++ -static -O3 -ffast-math -lm -o USalign USalign.cpp
 g++ -static -O3 -ffast-math -lm -o qTMclust qTMclust.cpp
 ```
-
-</details>
 <br>
 
 Once your python environment is set up, create your `.env` file with the appropriate environment variables; see the .env.example file included in the codebase for reference. 
@@ -127,8 +135,6 @@ The pre-processed files refer to all RNA structures from the PDB at ≤4A resolu
 ├── tools                           # Directory for external tools
 |   ├── draw_rna                    # RNA secondary structure visualization
 |   ├── EternaFold                  # RNA sequence to secondary structure prediction tool
-|   ├── RhoFold                     # RNA sequence to 3D structure prediction tool
-|   ├── ribonanzanet                # RNA sequence to chemical mapping prediction tool
 |   └── x3dna-v2.4                  # RNA secondary structure determination from 3D
 |   |__ x3dna-dssr                  # RNA base pairing determination from 3D     
 |

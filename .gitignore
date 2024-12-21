@@ -1,6 +1,4 @@
 # Custom
-/tools
-/data
 /wandb
 /slurm
 .DS_Store
