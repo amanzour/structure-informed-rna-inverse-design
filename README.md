@@ -3,8 +3,8 @@
 Secondary-structure-informed RNA Inverse Design, or simply structure-informed-RNA-inverse-design, is a geometric deep learning pipeline for 3D RNA inverse design that also incorporates RNA secondary-structure information.
 ![](/tertiaryedges.png)
 
-Secondary-structure-informed RNA Inverse Design, or simply structure-informed-RNA-inverse-design, is a geometric deep learning pipeline for 3D RNA inverse design that also incorporates RNA secondary-structure information.
-The original code and methodology were adopted from **gRNAde** [gRNAde: Geometric Deep Learning for 3D RNA inverse design](https://arxiv.org/abs/2305.14749), Chaitanya K. Joshi, Arian R. Jamasb, Ramon Viñas, Charles Harris, Simon Mathis, Alex Morehead, and Pietro Liò. gRNAde: Geometric Deep Learning for 3D RNA inverse design. *ICML Computational Biology Workshop, 2023.* and is analogous to [ProteinMPNN](https://github.com/dauparas/ProteinMPNN) for protein design. 
+*Secondary*-structure-informed RNA Inverse Design, is a geometric deep learning pipeline for 3D RNA inverse design that also incorporates RNA secondary-structure information.
+The original code and methodology were adopted from **gRNAde** [gRNAde: Geometric Deep Learning for 3D RNA inverse design](https://arxiv.org/abs/2305.14749), Chaitanya K. Joshi, Arian R. Jamasb, Ramon Viñas, Charles Harris, Simon Mathis, Alex Morehead, and Pietro Liò. gRNAde: Geometric Deep Learning for 3D RNA inverse design. *ICML Computational Biology Workshop, 2023.* analogous to [ProteinMPNN](https://github.com/dauparas/ProteinMPNN) for protein design. 
  For more information on using original code for training, testing, and also RNA design, see [gRNAde GitHub page](https://github.com/chaitjo/geometric-rna-design).
 
 ## Similarity to gRNAde
@@ -108,8 +108,9 @@ touch .env
 You're now ready to use econdary-structure-informed RNA Inverse Design. To design sequences based on a 3D structure, use the **tutorial.py** file, which uses the modified version of the **gRNAde.py** module.
 In order to train your own models from scratch, you still need to download and process raw RNA structures from RNAsolo ([instructions below](#downloading-data)).
 Second options is to use the already processed files:
+
 ## Download processed files
-Download a pre-processed [`processed.pt`](https://people.sunypoly.edu/~manzoua/data/processed.pt) file and [`processed_df.csv`](https://people.sunypoly.edu/~manzoua/data/processed_df.csv) metadata, and place them into the `data/` directory. Also download different generated splits [`seqid_split.pt`](https://people.sunypoly.edu/~manzoua/data/seqid_split.pt) and [`structsim_v2_split.pt`](https://people.sunypoly.edu/~manzoua/data/structsim_v2_split.pt) into `data/`. Or you can just copy all content of https://people.sunypoly.edu/~manzoua/data/ into `data/`.
+ Simply copy all content of https://people.sunypoly.edu/~manzoua/data/ into `data/`. Required files are a pre-processed [`processed.pt`](https://people.sunypoly.edu/~manzoua/data/processed.pt) file and [`processed_df.csv`](https://people.sunypoly.edu/~manzoua/data/processed_df.csv) metadata, as well as generated splits [`seqid_split.pt`](https://people.sunypoly.edu/~manzoua/data/seqid_split.pt) and [`structsim_v2_split.pt`](https://people.sunypoly.edu/~manzoua/data/structsim_v2_split.pt) into `data/`. **Note** you can always generate new data splits from the above processed file, via jupyter notebooks in the `notebooks` folder.
 The pre-processed files refer to all RNA structures from the PDB at ≤4A resolution (~15K 3D structures) downloaded via [RNASolo](https://rnasolo.cs.put.poznan.pl) on 1 August 2024. The text file `2024-08-01-pdbs.txt` contains the names of corresponding pdb files that were processed, here.
 
 
