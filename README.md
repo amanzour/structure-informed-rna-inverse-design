@@ -1,19 +1,20 @@
-#  Secondary-structure-Informed Inverse RNA Design
-
-Secondary-structure-informed RNA Inverse Design, or simply structure-informed-RNA-inverse-design, is a geometric deep learning pipeline for 3D RNA inverse design that also incorporates RNA secondary-structure information. It currently relies on the RNA secondary-structure base-pairing identification tool [X3dna-dssr](https://x3dna.org/). 
-The original code and methodology were adopted from **gRNAde** ['gRNAde: Geometric Deep Learning for 3D RNA inverse design'](https://arxiv.org/abs/2305.14749), Chaitanya K. Joshi, Arian R. Jamasb, Ramon Viñas, Charles Harris, Simon Mathis, Alex Morehead, and Pietro Liò. gRNAde: Geometric Deep Learning for 3D RNA inverse design. *ICML Computational Biology Workshop, 2023.* and is analogous to [ProteinMPNN](https://github.com/dauparas/ProteinMPNN) for protein design. 
-
- For more information on using original code for training, testing, and also RNA design, see ['gRNAde GitHub page'](https://github.com/chaitjo/geometric-rna-design).
-
-Similar to gRNAde, Structure-informed RNA design generates an RNA sequence conditioned on one or more 3D RNA backbone conformations.
-RNA backbones are featurized as geometric graphs and processed via a multi-state GNN encoder which is equivariant to 3D roto-translation of coordinates as well as conformer order. Model decoder and sequence design is similarly order-invariant. Major differences from gRNAde: 1. There are different edge-types (primary-, secondary-, and tertiary-structure) in the input graph (See below image). 2. The software needs an independent RNA secondary-structure identification tool, currently X3dna-dssr,that inputs PDB files and determines canonical and non-canonical base pairs. These base pairs determine the secondary-structure edge types of the input. 3. Edge-feature positional encoding is not used. 4. If multiple 3D backbones are available, the GNN encode and decoder treat it as separate structure and only combine prediction at the final stage. The final modification was done in an attempt to increase expressiveness of Riboswitches.
+#  Secondary-structure-Informed RNA Inverse Design
 
 ![](/tertiaryedges.png)
+
+Secondary-structure-informed RNA Inverse Design, or simply structure-informed-RNA-inverse-design, is a geometric deep learning pipeline for 3D RNA inverse design that also incorporates RNA secondary-structure information.
+The original code and methodology were adopted from **gRNAde** [gRNAde: Geometric Deep Learning for 3D RNA inverse design](https://arxiv.org/abs/2305.14749), Chaitanya K. Joshi, Arian R. Jamasb, Ramon Viñas, Charles Harris, Simon Mathis, Alex Morehead, and Pietro Liò. gRNAde: Geometric Deep Learning for 3D RNA inverse design. *ICML Computational Biology Workshop, 2023.* and is analogous to [ProteinMPNN](https://github.com/dauparas/ProteinMPNN) for protein design. 
+
+ For more information on using original code for training, testing, and also RNA design, see [gRNAde GitHub page](https://github.com/chaitjo/geometric-rna-design).
+
+Similar to gRNAde, Structure-informed RNA design generates an RNA sequence conditioned on one or more 3D RNA backbone conformations.
+RNA backbones are featurized as geometric graphs and processed via a multi-state GNN encoder which is equivariant to 3D roto-translation of coordinates as well as conformer order. Model decoder and sequence design is similarly order-invariant. 
+Major differences from gRNAde: 1. There are different edge-types (primary-, secondary-, and tertiary-structure) in the input graph (above image). **Note** The software needs an independent RNA secondary-structure identification tool. It currently relies on [x3dna-dssr](https://x3dna.org/), which reads the corresponding pdb file(s) and determines all the canonical and non-canonical base pairs, i.e.,the secondary-structure edge types of the input graph. 2. Positional encoding of edges is eliminated. 3. If multiple 3D backbones are provided, the GNN encoder treats them as separate inputs, only pooling updated node embedings at the final stage in the decoder. The reason for this choice of model architecture is to increase expressiveness of RNAs with multiple stable structures, such as riboswtiches.
 
 
 ## Installation
 
-Instructions are according to ['gRNAde GitHub page'](https://github.com/chaitjo/geometric-rna-design) with some minor modifications.
+Instructions are taken from and according to [gRNAde GitHub page](https://github.com/chaitjo/geometric-rna-design). Only additioanl instruction is to install x3da-dssr.
 
 In order to get started, set up a python environment by following the installation instructions below. 
 We have tested gRNAde on Linux with Python 3.10.12 and CUDA 11.8 on NVIDIA A100 80GB GPUs and Intel XPUs, as well as on MacOS (CPU).
@@ -34,7 +35,7 @@ mamba create -n rna python=3.10
 mamba activate rna
 ```
 
-Set up your new python environment, starting with PyTorch and PyG:
+Set up your new python environment, starting with PyTorch and PyG
 ```sh
 # Install Pytorch on Nvidia GPUs (ensure appropriate CUDA version for your hardware)
 mamba install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
@@ -44,20 +45,9 @@ pip install torch_geometric
 pip install torch_scatter torch_cluster -f https://data.pyg.org/whl/torch-2.1.2+cu118.html
 ```
 <details>
-<summary>Install Pytorch/PyG on Intel XPUs (specific to Cambridge's Dawn supercomputer)</summary>
 
-```sh
-module load default-dawn
-source /usr/local/dawn/software/external/intel-oneapi/2024.0/setvars.sh
-export ZE_FLAT_DEVICE_HIERARCHY=COMPOSITE
-python -m pip install torch==2.1.0a0 torchvision==0.16.0a0 torchaudio==2.1.0a0 intel-extension-for-pytorch==2.1.10+xpu --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
-pip install torch_scatter torch_cluster
-```
 
-</details>
-<br>
-
-Next, install other compulsory dependencies:
+Other compulsory dependencies
 ```sh
 # Install other python libraries
 mamba install jupyterlab matplotlib seaborn pandas biopython biotite -c conda-forge
@@ -69,24 +59,23 @@ tar -xvzf x3dna-v2.4-linux-64bit.tar.gz
 ./x3dna-v2.4/bin/x3dna_setup
 # Follow the instructions to test your installation
 
-# Install DSSR. This software is under copyright and must be purchased. See https://inventions.techventures.columbia.edu/technologies/dssr-an-integrated--CU20391 for making a request.
-cp dssr-basic-*-.zip in the tools folder
-unzip dssr-basic-*.zip. This will create x3dna-dssr folder in tools directory
 # Install EternaFold for secondary structure prediction
 cd ~/structure-informed-RNA-inverse-design/tools/
 git clone --depth=1 https://github.com/eternagame/EternaFold.git && cd EternaFold/src
 make
-# Notes: 
-# - Multithreaded version of EternaFold did not install for me
-# - To install on MacOS, start a shell in Rosetta using `arch -x86_64 zsh`
+```
 
-# Download RhoFold checkpoint (~500MB)
-cd ~/structure-informed-RNA-inverse-design/tools/rhofold/
-gdown https://drive.google.com/uc?id=1To2bjbhQLFx1k8hBOW5q1JFq6ut27XEv
+Another dependency but only if you need to process new data. (Note that you can just skip this section if you choose to use the already processed files. see **Download already processed files**).
+```sh
+# Install x3dna-dssr. This software is under copyright and must be purchased. See https://inventions.techventures.columbia.edu/technologies/dssr-an-integrated--CU20391 for making a request.
+# Another option would have been to use the Find RNA 3D (fr3d) software ((https://www.bgsu.edu/research/rna/software/fr3d.html), which is free . It requires some more modification to the source code. We had tried this software as well and results are similar (more on this in later versions).
+cp dssr-basic-*-.zip in the tools folder
+unzip dssr-basic-*.zip. This will create x3dna-dssr folder in tools directory
+
 ```
 
 <details>
-<summary>Optionally, you can also set up some extra tools and dependencies.</summary>
+<summary>Tools needed for data pre-processing. Note that if you only want to design RNAs based on trained parameters, or if you choose to use the already processed structures (see **Download already processed files**), data processing is not needed and you can skip this section.</summary>
 
 ```sh
 # (Optional) Install CD-HIT for sequence identity clustering
@@ -110,7 +99,10 @@ touch .env
 
 You're now ready to use econdary-structure-informed RNA Inverse Design. To design sequences based on a 3D structure, use the **tutorial.py** file, which uses the modified version of the **gRNAde.py** module.
 In order to train your own models from scratch, you still need to download and process raw RNA structures from RNAsolo ([instructions below](#downloading-data)).
-Second options is to use trained parameters. Parameters are available in the **checkpoints** directory. [The model trained using seqid split strategy](checkpoints/SIRD_ARv1_3state_seqid.h5) uses the data downloaded on August 1, 2024. There was a total of around 14 thousand structures were at resolution ≤ 4Å. For a comprehensive list of pdb files used for this training see [This list](data/2024-08-01-pdbs.txt).
+Second options is to use the already processed files:
+## Download processed files
+Download a pre-processed [`processed.pt`](https://people.sunypoly.edu/~manzoua/data/processed.pt) file and [`processed_df.csv`](https://people.sunypoly.edu/~manzoua/data/processed_df.csv) metadata, and place them into the `data/` directory. Also download different generated splits [`seqid_split.pt`](https://people.sunypoly.edu/~manzoua/data/seqid_split.pt) and [`structsim_v2_split.pt`](https://people.sunypoly.edu/~manzoua/data/structsim_v2_split.pt) into `data/`. Or you can just copy all content of https://people.sunypoly.edu/~manzoua/data/ into `data/`.
+The pre-processed files refer to all RNA structures from the PDB at ≤4A resolution (~15K 3D structures) downloaded via [RNASolo](https://rnasolo.cs.put.poznan.pl) on 1 August 2024. The text file `2024-08-01-pdbs.txt` contains the names of corresponding pdb files that were processed, here.
 
 
 ## Directory Structure and Usage
@@ -191,10 +183,13 @@ Each RNA will be processed into the following format (most of the metadata is op
 
 The precise procedure for creating the splits (which can be used to modify and customise them) can be found in the `notebooks/` directory.
 
+## RNA design using the gRNAde module
+For desiging RNAs, you can use the already trained parameters. Parameters are available in the **checkpoints** directory. [The model trained using seqid split strategy](checkpoints/SIRD_ARv1_3state_seqid.h5) uses the data downloaded on August 1, 2024. There was a total of around 15 thousand structures were at resolution ≤ 4Å. For a comprehensive list of pdb files used for this training see [This list](data/2024-08-01-pdbs.txt).
+
 
 ## Citations
 
-# Original Software:
+### Original Software:
 ```
 @article{joshi2023grnade,
   title={gRNAde: Geometric Deep Learning for 3D RNA inverse design},
