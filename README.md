@@ -158,7 +158,7 @@ The pre-processed files refer to all RNA structures from the PDB at ≤4A resolu
 
 ## Downloading and Preparing Data
 
-If you would like to train your own models from scratch, download and extract the raw `.pdb` files via the following script into the `data/raw/` directory (or another location indicated by the `DATA_PATH` environment variable in your `.env` file).
+If you would like to train your own models from scratch, download and extract the raw `.pdb` files into the `data/raw/` directory (or another location indicated by the `DATA_PATH` environment variable in your `.env` file). To download all files, got to RNAsolo > Download arhchive > select data type & format = `3D structure (PDB)`, molecule classification = `all molecules`, redunddancy (equivalence classes) = `all class members`, resolution = `< 4.0`.
 
 Next, process the raw PDB files into our ML-ready format, which will be saved under `data/processed.pt`. 
 You need to install the optional dependencies (US-align, CD-HIT) for processing.
