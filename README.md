@@ -196,12 +196,36 @@ For desiging RNAs, you can use the already trained parameters. Parameters are av
 
 ## Citations
 
-### Original Software:
+### Our preprint:
 ```
-@article{joshi2023grnade,
-  title={gRNAde: Geometric Deep Learning for 3D RNA inverse design},
-  author={Joshi, Chaitanya K. and Jamasb, Arian R. and Vi{\~n}as, Ramon and Harris, Charles and Mathis, Simon and Morehead, Alex and Anand, Rishabh and Li{\`o}, Pietro},
-  journal={arXiv preprint},
-  year={2023},
+@article{Amir2024structinformed,
+ doi = {10.20944/preprints202412.2156.v1},
+ url = {https://doi.org/10.20944/preprints202412.2156.v1},
+ year = 2024,
+ month = {December},
+ publisher = {Preprints},
+ author = {Amirhossein Manzourolajdad and Mohammad Mohebbi},
+ title = {Secondary-Structure-Informed RNA Inverse Design via Relational Graph Neural Networks},
+ journal = {Preprints}
+}
+```
+
+### Original Software by Joshi et al:
+```
+@article{joshi2024grnade,
+ title={gRNAde: Geometric Deep Learning for 3D RNA inverse design},
+ author={Joshi, Chaitanya K and Jamasb, Arian R and Vi{\~n}as, Ramon and Harris, Charles and Mathis, Simon V and Morehead, Alex and Anand, Rishabh and Li{\`o}, Pietro},
+ journal={bioRxiv},
+ year={2024},
+ publisher={Cold Spring Harbor Laboratory Preprints}
+}
+
+@incollection{joshi2024grnade,
+ title={gRNAde: A Geometric Deep Learning pipeline for 3D RNA inverse design},
+ author={Joshi, Chaitanya K and Li{\`o}, Pietro},
+ booktitle={RNA Design: Methods and Protocols},
+ pages={121--135},
+ year={2024},
+ publisher={Springer}
 }
 ```
