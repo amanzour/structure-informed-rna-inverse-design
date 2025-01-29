@@ -3,24 +3,24 @@
 Secondary-structure-informed RNA Inverse Design, or simply structure-informed-RNA-inverse-design, is a geometric deep learning pipeline for 3D RNA inverse design that also incorporates RNA secondary-structure information.
 ![](/tertiaryedges.png)
 
-*Secondary*-structure-informed RNA Inverse Design, is a geometric deep learning pipeline for 3D RNA inverse design that also incorporates RNA secondary-structure information.
+*Secondary*-structure-informed RNA Inverse Design, is a geometric deep learning pipeline for 3D RNA inverse design.
 The original code and methodology were adopted from **gRNAde** [gRNAde: Geometric Deep Learning for 3D RNA inverse design](https://arxiv.org/abs/2305.14749), Chaitanya K. Joshi, Arian R. Jamasb, Ramon Viñas, Charles Harris, Simon Mathis, Alex Morehead, and Pietro Liò. gRNAde: Geometric Deep Learning for 3D RNA inverse design. *ICML Computational Biology Workshop, 2023.* analogous to [ProteinMPNN](https://github.com/dauparas/ProteinMPNN) for protein design. 
- For more information on using original code for training, testing, and also RNA design, see [gRNAde GitHub page](https://github.com/chaitjo/geometric-rna-design).
+ For more information on using original code for training, testing, and also RNA design, see [gRNAde GitHub page](https://github.com/chaitjo/geometric-rna-design). RNA backbones are featurized as geometric graphs and processed via a multi-state GNN encoder which is equivariant to 3D roto-translation of coordinates as well as conformer order. Model decoder and sequence design is similarly order-invariant. 
 
 ## Similarity to gRNAde
-Similar to gRNAde, Structure-informed RNA design generates an RNA sequence conditioned on one or more 3D RNA backbone conformations.
-RNA backbones are featurized as geometric graphs and processed via a multi-state GNN encoder which is equivariant to 3D roto-translation of coordinates as well as conformer order. Model decoder and sequence design is similarly order-invariant. 
+The code structure and most of the modules as well as parameters are adopted from gRNAde. Modules include, implementation of RNA features, inter-atom angle and orientation extraction, Geomtric Vector Perceptrons (GVPs), message-passing scheme, noise-adding procedures, auto-regressive decoder, RBF interpolation of distance adn many more. Similar to gRNAde, Structure-informed RNA design generates an RNA sequence conditioned on one or more 3D RNA backbone conformations.
+
 
 ## Difference from gRNAde
 
 ### Major
-1. There are different edge-types (primary-, secondary-, and tertiary-structure) in the input graph (above image). **Note** The software needs an independent RNA secondary-structure identification tool. It currently relies on [x3dna-dssr](https://x3dna.org/), which reads the corresponding pdb file(s) and determines all the canonical and non-canonical base pairs, i.e.,the secondary-structure edge types of the input graph. 
+1. There are different edge-types (primary-structure, secondary-structure, and three-dimensional or spatial) in the input graph (above image). **Note** The software needs an independent RNA secondary-structure identification tool. It currently relies on either [x3dna-dssr](https://x3dna.org/), or [Fr3d](https://www.bgsu.edu/research/rna/software/fr3d.html), which determines all the canonical and non-canonical base pairs, i.e.,the secondary-structure edge types of the input graph, from the corresponding pdb file.  
 2. Positional encoding of edges is eliminated. 
-3. If multiple 3D backbones are provided, the GNN encoder treats them as separate inputs, only pooling updated node embedings at the final stage in the decoder. The reason for this choice of model architecture is to increase expressiveness of RNAs with multiple stable structures, such as riboswtiches.
+3. If multiple 3D backbones are provided, the GNN encoder treats them as separate inputs, only pooling updated node embeddings at the final stage in the decoder. The reason for this choice of model architecture is to increase expressiveness of RNAs with multiple stable structures, such as riboswtiches.
 
 ### Minor
-1. Edge determination in the original `gRNAde` was according to `k-means` clustering of node locations. Here, there were three different edge types. The tertiary-structure edge types were done similar to the roginal method. However, the clustering algorithm used here was `dbscan`. The rational was that we were more interested in extracting relative positioning of nodes (nucleotides) in cavities.
-2. Rhofold and ribonanzanet components were eliminated. There is currently no built-in 3D structure validation of predictions in the metrics.
+1. Edge determination in the original `gRNAde` was according to `k-means` clustering of node locations. Here, there were three different edge types. The spatial edge types were derived similarly, except that the clustering algorithm used here was `dbscan`. The rational was that we were more interested in extracting relative positioning of nodes (nucleotides) in RNA pockets and this is more likely using dbscan than k-means clustering which is essentially a centroid-based clustering algorithm.
+2. Rhofold and ribonanzanet components were eliminated. There is currently no built-in 3D structure validation of predictions in the metrics. 
 
 
 ## Installation
@@ -79,7 +79,7 @@ make
 Another dependency but only if you need to process new data. Note that you can just skip this section if you choose to use the already processed files. See **Download already processed files**.
 ```sh
 # Install x3dna-dssr. This software is under copyright and must be purchased. See https://inventions.techventures.columbia.edu/technologies/dssr-an-integrated--CU20391 for making a request.
-# Another option would have been to use the Find RNA 3D (fr3d) software ((https://www.bgsu.edu/research/rna/software/fr3d.html), which is free . It requires some more modification to the source code. We had tried this software as well and results are similar (more on this in later versions).
+# Another option would have been to use the Find RNA 3D (fr3d) software ((https://www.bgsu.edu/research/rna/software/fr3d.html), which is free . It requires altering the configs/defeault.yaml file and setting `base_pairing:` parameter to `'sec_fr3d_list'`. We had tried this software as well and results are similar (more on this in later versions).
 cp dssr-basic-*-.zip in the tools folder
 unzip dssr-basic-*.zip. This will create x3dna-dssr folder in tools directory
 
