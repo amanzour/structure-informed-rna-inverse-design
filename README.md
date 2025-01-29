@@ -19,7 +19,7 @@ The code structure and most of the modules as well as parameters are adopted fro
 3. If multiple 3D backbones are provided, the GNN encoder treats them as separate inputs, only pooling updated node embeddings at the final stage in the decoder. The reason for this choice of model architecture is to increase expressiveness of RNAs with multiple stable structures, such as riboswtiches.
 
 ### Minor
-1. Edge determination in the original `gRNAde` was according to `k-means` clustering of node locations. Here, there were three different edge types. The spatial edge types were derived similarly, except that the clustering algorithm used here was `dbscan`. The rational was that we were more interested in extracting relative positioning of nodes (nucleotides) in RNA pockets and this is more likely using dbscan than k-means clustering which is essentially a centroid-based clustering algorithm.
+1. Edge determination in the original gRNAde was according to k-means clustering of node locations. Here, there were three different edge types. The spatial edge types were derived similarly, except that the clustering algorithm used here was dbscan. The rational was that we were more interested in extracting relative positioning of nodes (nucleotides) in RNA pockets and this is more likely using dbscan than k-means clustering which is essentially a centroid-based clustering algorithm.
 2. Rhofold and ribonanzanet components were eliminated. There is currently no built-in 3D structure validation of predictions in the metrics. 
 
 
@@ -79,13 +79,13 @@ make
 Another dependency but only if you need to process new data. Note that you can just skip this section if you choose to use the already processed files. See **Download already processed files**.
 ```sh
 # Install x3dna-dssr. This software is under copyright and must be purchased. See https://inventions.techventures.columbia.edu/technologies/dssr-an-integrated--CU20391 for making a request.
-# Another option would have been to use the Find RNA 3D (fr3d) software ((https://www.bgsu.edu/research/rna/software/fr3d.html), which is free . It requires altering the configs/defeault.yaml file and setting `base_pairing:` parameter to `'sec_fr3d_list'`. We had tried this software as well and results are similar (more on this in later versions).
+# Another option would have been to use the Find RNA 3D (fr3d) software ((https://www.bgsu.edu/research/rna/software/fr3d.html), which is free . It requires altering the configs/defeault.yaml file and setting base_pairing parameter to 'sec_fr3d_list' plus some minor code modifications. We had tried this software as well and results are similar (more on this in later versions).
 cp dssr-basic-*-.zip in the tools folder
 unzip dssr-basic-*.zip. This will create x3dna-dssr folder in tools directory
 
 ```
 
-<summary>Tools needed for data pre-processing. Note that if you only want to design RNAs based on trained parameters, or if you choose to use the already processed structures (see **Download already processed files**), data processing is not needed and you can skip this section.</summary>
+<summary>Tools needed for data pre-processing. Note that if you only want to design RNAs based on trained parameters, or if you choose to use the already processed structures for training and testing (see **Download already processed files**), data processing is not needed and you can skip this section.</summary>
 
 ```sh
 # (Optional) Install CD-HIT for sequence identity clustering
@@ -104,13 +104,11 @@ Once your python environment is set up, create your `.env` file with the appropr
 cd ~/structure-informed-RNA-inverse-design/
 touch .env
 ```
-
-You're now ready to use econdary-structure-informed RNA Inverse Design. To design sequences based on a 3D structure, use the **tutorial.py** file, which uses the modified version of the **gRNAde.py** module.
 In order to train your own models from scratch, you still need to download and process raw RNA structures from RNAsolo ([instructions below](#downloading-data)).
 Second options is to use the already processed files:
 
 ## Download processed files
- Simply copy all content of https://people.sunypoly.edu/~manzoua/data/ into `data/`. Required files are a pre-processed [`processed.pt`](https://people.sunypoly.edu/~manzoua/data/processed.pt) file and [`processed_df.csv`](https://people.sunypoly.edu/~manzoua/data/processed_df.csv) metadata, as well as generated splits [`seqid_split.pt`](https://people.sunypoly.edu/~manzoua/data/seqid_split.pt) and [`structsim_v2_split.pt`](https://people.sunypoly.edu/~manzoua/data/structsim_v2_split.pt) into `data/`. **Note** you can always generate new data splits from the above processed file, via jupyter notebooks in the `notebooks` folder.
+ Simply copy all content of https://people.sunypoly.edu/~manzoua/data/ into `data/`. Required files are a pre-processed [`processed.pt`](https://people.sunypoly.edu/~manzoua/data/processed.pt) file and [`processed_df.csv`](https://people.sunypoly.edu/~manzoua/data/processed_df.csv) metadata, as well as generated splits [`seqid_split.pt`](https://people.sunypoly.edu/~manzoua/data/seqid_split.pt) and [`structsim_v2_split.pt`](https://people.sunypoly.edu/~manzoua/data/structsim_v2_split.pt) into `data/`. **Note** you can always generate new data splits from the above processed file, via the jupyter notebooks in the `notebooks` folder.
 The pre-processed files refer to all RNA structures from the PDB at ≤4A resolution (~15K 3D structures) downloaded via [RNASolo](https://rnasolo.cs.put.poznan.pl) on 1 August 2024. The text file `2024-08-01-pdbs.txt` contains the names of corresponding pdb files that were processed, here.
 
 
@@ -192,6 +190,7 @@ The precise procedure for creating the splits (which can be used to modify and c
 
 ## RNA design using the gRNAde module
 For desiging RNAs, you can use the already trained parameters. Parameters are available in the **checkpoints** directory. [The model trained using seqid split strategy](checkpoints/SIRD_ARv1_3state_seqid.h5) uses the data downloaded on August 1, 2024. There was a total of around 15 thousand structures were at resolution ≤ 4Å. For a comprehensive list of pdb files used for this training see [This list](data/2024-08-01-pdbs.txt).
+Use the **tutorial.py** file for designing sequences for a specific input PDB file. The program uses the modified version of the **gRNAde.py** module for sequence design.
 
 
 ## Citations
@@ -229,3 +228,15 @@ For desiging RNAs, you can use the already trained parameters. Parameters are av
  publisher={Springer}
 }
 ```
+<hr/>
+
+## Details on differences between structure-informed and gRNAde modules
+
+### configs/default.yaml
+parameters raduis, primary_dist, and base_pairing added.
+
+### data/process_data.py
+feature ['sec_bp_list'] added to seq_to_data output.
+
+### notebooks/
+file data_stats_edges.ipynb added.
