@@ -272,6 +272,9 @@ functions get_unpaired, pdb_to_sec_struct_bp, pdb_to_x3dna_2, x3dna_to_sec_struc
 ### src/data/constants.py
 constant DSSR_PATH added.
 
+### src/data/evaluator.py
+function evaluate altered to eliminate metrics 'sc_score_ribonanzanet' and 'sc_score_rhofold'.
+
 ### src/data/layers.py
 class MultiGVPConvLayer(nn.Module) and its forward function restructured to handle multiple edge types.\
 class MultiGVPConv(MessagePassing) and its forward function restructured to handle new edge dimensions.\
@@ -282,4 +285,20 @@ class AutoregressiveMultiGNNv1(torch.nn.Module), its forward and sample function
 class NonAutoregressiveMultiGNNv1(torch.nn.Module), its forward and sample functions all altered similarly.\
 function pool_multi_conf_2 added and used instead of pool_multi_conf.
 
-    
+### src/data/trainer.py
+function train altered to eliminate metrics 'sc_score_ribonanzanet' and 'sc_score_rhofold'.
+
+### tools/
+directories rhofold and ribonanzanet removed.
+
+### gRNAde.py
+dictionary CHECKPOINT_PATH altered to only contain trained paramters file checkpoints/SIRD_ARv1_3state_seqid.h5.\
+EDGE_IN_DIM altered from (131, 3) to (99, 3).\
+class class gRNAde(object) altered to generate correct RNAGraphFeaturizer object.
+
+### main.py
+function main altered to exclude metrics 'sc_score_ribonanzanet' and 'sc_score_rhofold'.\
+function get_dataset altered to generate correct RNADesignDataset object.
+
+### tutorial.py
+file repurposed for RNA inverse design.
