@@ -248,38 +248,38 @@ functions pdb_to_tensor_2, get_twist, and dist_2 added.
 class BatchSampler(data.Sampler) altered to feed RNA files one by one to the encoder.
 
 ### src/data/featurizer.py
-file heavily altered.
-class class RNAGraphFeaturizer(object) altered: 
-    parameter edges_s altered from having dimensions [num_edges, num_conf, num_bb_atoms x num_rbf + num_posenc + num_bb_atoms] to dimensions [num_edges, num_conf, num_bb_atoms x num_rbf + num_bb_atoms].
-    parameter num_posenc eliminated.
-    parameteres primary_dist = 500 and base_pairing added.
-    parameter radius repurposed.
-following parameters added to data output:
-    edge_s_list = edge_s_list, # num_conf x num_edges x (num_bb_atoms x num_rbf + num_bb_atoms)
-    edge_v_list = edge_v_list, # num_conf x num_edges x num_bb_atoms x 3
-    edge_index_list = edge_index_list,    # list of 2 x num_edges
-    p_s_t_map_list = p_s_t_map_list,      # primary/secondary/spatial edge types
-    **Note** unlike gRNAde, different conformations of the RNA do not have identical number of edges. Therefore, edges are saved in lists as opposed to tensors.
-functions featurize_from_pdb_file and featurize_from_pdb_filelist altered.
-functions get_angle and offset_basepairs added.
-function unpaired_cluster_dbscan added and used instead of torch_cluster.knn_graph.
-function get_k_random_entries_and_masks_2 added and used intead of get_k_random_entries_and_masks.
+file heavily altered.\
+class class RNAGraphFeaturizer(object) altered: \
+    parameter edges_s altered from having dimensions [num_edges, num_conf, num_bb_atoms x num_rbf + num_posenc + num_bb_atoms] to dimensions [num_edges, num_conf, num_bb_atoms x num_rbf + num_bb_atoms].\
+    parameter num_posenc eliminated.\
+    parameteres primary_dist = 500 and base_pairing added.\
+    parameter radius repurposed.\
+following parameters added to data output:\
+    edge_s_list = edge_s_list, # num_conf x num_edges x (num_bb_atoms x num_rbf + num_bb_atoms)\
+    edge_v_list = edge_v_list, # num_conf x num_edges x num_bb_atoms x 3\
+    edge_index_list = edge_index_list,    # list of 2 x num_edges\
+    p_s_t_map_list = p_s_t_map_list,      # primary/secondary/spatial edge types\
+    **Note** unlike gRNAde, different conformations of the RNA do not have identical number of edges. Therefore, edges are saved in lists as opposed to tensors.\
+functions featurize_from_pdb_file and featurize_from_pdb_filelist altered.\
+functions get_angle and offset_basepairs added.\
+function unpaired_cluster_dbscan added and used instead of torch_cluster.knn_graph.\
+function get_k_random_entries_and_masks_2 added and used intead of get_k_random_entries_and_masks.\
 
 ### src/data/sec_struct_utils.py
-constant DSSR_PATH added.
+constant DSSR_PATH added.\
 functions get_unpaired, pdb_to_sec_struct_bp, pdb_to_x3dna_2, x3dna_to_sec_struct_2, and fr3d_to_sec_struct added.
 
 ### src/data/constants.py
 constant DSSR_PATH added.
 
 ### src/data/layers.py
-class MultiGVPConvLayer(nn.Module) and its forward function restructured to handle multiple edge types.
-class MultiGVPConv(MessagePassing) and its forward function restructured to handle new edge dimensions.
+class MultiGVPConvLayer(nn.Module) and its forward function restructured to handle multiple edge types.\
+class MultiGVPConv(MessagePassing) and its forward function restructured to handle new edge dimensions.\
 functions _split_multi and _merge_multi restructured to handle new node and edge dimensions.
 
 ### src/data/models.py
-class AutoregressiveMultiGNNv1(torch.nn.Module), its forward and sample functions all altered to accommodate for multiple iterations to feed multiple structures and to take into account different edge types in within each iteration.
-class NonAutoregressiveMultiGNNv1(torch.nn.Module), its forward and sample functions all altered similarly.
+class AutoregressiveMultiGNNv1(torch.nn.Module), its forward and sample functions all altered to accommodate for multiple iterations to feed multiple structures and to take into account different edge types in within each iteration.\
+class NonAutoregressiveMultiGNNv1(torch.nn.Module), its forward and sample functions all altered similarly.\
 function pool_multi_conf_2 added and used instead of pool_multi_conf.
 
     
