@@ -27,8 +27,8 @@ gRNAde_module = gRNAde(split='das', max_num_conformers=3, gpu_id=0)
 
 # Single-state design example usage
 sequences, samples, perplexity, recovery_sample, sc_score = gRNAde_module.design_from_pdb_file(
-    pdb_filepath = os.path.join(PROJECT_PATH, "[absolute_path_to].pdb"),
-    output_filepath = os.path.join(PROJECT_PATH, "[absolute_path_to]_predicted.fasta"),
+    pdb_filepath = os.path.join(PROJECT_PATH, "[path to file]/2CKY_1_A.pdb"),
+    output_filepath = os.path.join(PROJECT_PATH, "[path to file]/2CKY_1_A_test.fasta"),
     n_samples = 16,
     temperature = 1.0,
     seed = 0

@@ -190,6 +190,7 @@ The precise procedure for creating the splits (which can be used to modify and c
 
 ## RNA design using the gRNAde module
 For desiging RNAs, you can use the already trained parameters. Parameters are available in the **checkpoints** directory. [The model trained using seqid split strategy](checkpoints/SIRD_ARv1_3state_seqid.h5) uses the data downloaded on August 1, 2024. There was a total of around 15 thousand structures were at resolution ≤ 4Å. For a comprehensive list of pdb files used for this training see [This list](data/2024-08-01-pdbs.txt).
+If you like to use a model that is only trained on solo RNAs (and RNA-DNA Hybrids), alter this line in the gRNAde.py file: CHECKPOINT_PATH = os.path.join(PROJECT_PATH, "checkpoints/SIRD_ARv1_3state_seqid.h5") to use SIRD_ARv1_3state_seqid_soloRNA.h5 instead. Save gRNAde.py. Then run tutorial.py.
 Use the **tutorial.py** file for designing sequences for a specific input PDB file. The program uses the modified version of the **gRNAde.py** module for sequence design.
 
 
