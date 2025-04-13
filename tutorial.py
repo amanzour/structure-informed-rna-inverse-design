@@ -1,8 +1,3 @@
-######################################################################
-# Geometric RNA Design, Joshi et al.
-# Original repository: https://github.com/chaitjo/geometric-rna-design
-######################################################################
-
 # Import libraries and set up the environment
 
 import sys
@@ -23,12 +18,12 @@ from src.constants import PROJECT_PATH
 from gRNAde import gRNAde
 
 # Create an instance of gRNAde
-gRNAde_module = gRNAde(split='das', max_num_conformers=3, gpu_id=0)
+gRNAde_module = gRNAde(split='multi', max_num_conformers=3, gpu_id=0)
 
 # Single-state design example usage
 sequences, samples, perplexity, recovery_sample, sc_score = gRNAde_module.design_from_pdb_file(
-    pdb_filepath = os.path.join(PROJECT_PATH, "[path to file]/2CKY_1_A.pdb"),
-    output_filepath = os.path.join(PROJECT_PATH, "[path to file]/2CKY_1_A_test.fasta"),
+    pdb_filepath = os.path.join(PROJECT_PATH, "/home/manzoua@campus.sunyit.edu/Documents/projects/struct-informed-rna-design/data/click/2CKY_1_A.pdb"),
+    output_filepath = os.path.join(PROJECT_PATH, "/home/manzoua@campus.sunyit.edu/Documents/projects/struct-informed-rna-design/data/click/2CKY_1_A_test.fasta"),
     n_samples = 16,
     temperature = 1.0,
     seed = 0

@@ -1,8 +1,3 @@
-######################################################################
-# Geometric RNA Design, Joshi et al.
-# Original repository: https://github.com/chaitjo/geometric-rna-design
-######################################################################
-
 import dotenv
 dotenv.load_dotenv(".env")
 
@@ -35,8 +30,13 @@ from src.evaluator import edit_distance, self_consistency_score_eternafold
 
 
 # Model checkpoint paths corresponding to data split and maximum no. of conformers
-CHECKPOINT_PATH = os.path.join(PROJECT_PATH, "checkpoints/SIRD_ARv1_3state_seqid.h5")
-
+CHECKPOINT_PATH = {
+    'multi': {
+        1: os.path.join(PROJECT_PATH, "checkpoints/SIRD_ARv1_3state_RNAonly_structsim.h5"),
+        2: os.path.join(PROJECT_PATH, "checkpoints/SIRD_ARv1_3state_riboswitch_structsim.h5"),
+        3: os.path.join(PROJECT_PATH, "checkpoints/SIRD_ARv1_3state_RNAProtein_structsim.h5"),
+    }
+}
 
 # Default model hyperparameters (do not change)
 VERSION = 0.3
@@ -51,7 +51,7 @@ NODE_IN_DIM = (15, 4)
 NODE_H_DIM = (128, 16)
 EDGE_IN_DIM = (99, 3)
 EDGE_H_DIM = (64, 4)
-NUM_LAYERS = 4
+NUM_LAYERS = 2
 DROP_RATE = 0.5
 OUT_DIM = 4
 DEFAULT_N_SAMPLES = 16
@@ -121,7 +121,7 @@ class gRNAde(object):
             out_dim = OUT_DIM
         )
         # Load model checkpoint
-        self.model_path = CHECKPOINT_PATH
+        self.model_path = CHECKPOINT_PATH[split][max_num_conformers]
         print(f"    Loading model checkpoint: {self.model_path}")
         self.model.load_state_dict(torch.load(self.model_path, map_location=torch.device('cpu')))
 
