@@ -195,7 +195,21 @@ If you like to use a model that is only trained on solo RNAs (and RNA-DNA Hybrid
 
 
 
-## Citations
+## Citation
+
+@Article{ncrna11020018,
+AUTHOR = {Manzourolajdad, Amirhossein and Mohebbi, Mohammad},
+TITLE = {Secondary-Structure-Informed RNA Inverse Design via Relational Graph Neural Networks},
+JOURNAL = {Non-Coding RNA},
+VOLUME = {11},
+YEAR = {2025},
+NUMBER = {2},
+ARTICLE-NUMBER = {18},
+URL = {https://www.mdpi.com/2311-553X/11/2/18},
+PubMedID = {40126342},
+ISSN = {2311-553X},
+DOI = {10.3390/ncrna11020018}
+}
 
 ### Our preprint:
 ```
